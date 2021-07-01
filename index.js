@@ -7,6 +7,11 @@ const mongoose = require("mongoose");
 // Database
 const database = require("./database/index");
 
+// Models
+const BookModel = require("./database/book");
+const AuthorModel = require("./database/author");
+const PublicationModel = require("./database/publication");
+
 // Initializing express
 const app = express();
 
@@ -33,8 +38,9 @@ Access          PUBLIC
 Parameters      NONE
 Method          GET
 */
-app.get("/", (req, res) => {
-  return res.json({ books: database.books });
+app.get("/", async (req, res) => {
+  const getAllBooks = await BookModel.find();
+  return res.json(getAllBooks);
 });
 
 /*
@@ -44,16 +50,22 @@ Access          PUBLIC
 Parameters      isbn
 Method          GET
 */
-app.get("/is/:isbn", (req, res) => {
-  const getSpecificBook = database.books.filter(
+app.get("/is/:isbn", async (req, res) => {
+  /*   const getSpecificBook = database.books.filter(
     (book) => book.ISBN === req.params.isbn
-  );
+  ); */
 
-  if (getSpecificBook.length === 0) {
+  const getSpecificBook = await BookModel.findOne({
+    ISBN: req.params.isbn,
+  });
+  // value -> true
+
+  if (!getSpecificBook) {
     return res.json({
-      error: `No Book found for the ISBN of ${req.params.isbn}`,
+      error: `No book found for the ISBN of ${req.params.isbn}`,
     });
   }
+
   return res.json({ book: getSpecificBook });
 });
 
@@ -64,32 +76,41 @@ Access          PUBLIC
 Parameters      category
 Method          GET
 */
-app.get("/c/:category", (req, res) => {
-  const getSpecificBooks = database.books.filter((book) =>
+app.get("/c/:category", async (req, res) => {
+  /*  const getSpecificBooks = database.books.filter((book) =>
     book.category.includes(req.params.category)
-  );
+  ); */
 
-  if (getSpecificBooks.length === 0) {
+  const getSpecificBooks = await BookModel.findOne({
+    category: req.params.category,
+  });
+
+  if (!getSpecificBooks) {
     return res.json({
-      error: `No Book found for the Category of ${req.params.category}`,
+      error: `No book found for the category of ${req.params.category}`,
     });
   }
+
   return res.json({ books: getSpecificBooks });
 });
 
 /*
-Route           /authors
+Route           /auth
 Description     get specific books based on a author
 Access          PUBLIC
 Parameters      authors
 Method          GET
 */
-app.get("/authors/:authors", (req, res) => {
-  const getSpecificauthor = database.books.filter((book) =>
+app.get("/auth/:authors", async (req, res) => {
+  /* const getSpecificauthor = database.books.filter((book) =>
     book.authors.includes(parseInt(req.params.authors))
-  );
+  ); */
 
-  if (getSpecificauthor.length === 0) {
+  const getSpecificauthor = await BookModel.findOne({
+    authors: parseInt(req.params.authors),
+  }).catch((err) => console.log(err));
+
+  if (!getSpecificauthor) {
     return res.json({
       error: `No Book found with the Author name ${req.params.authors}`,
     });
@@ -106,8 +127,9 @@ Parameters      NONE
 Method          GET
 */
 
-app.get("/author", (req, res) => {
-  return res.json({ authors: database.authors });
+app.get("/author", async (req, res) => {
+  const getAllAuthors = await AuthorModel.find();
+  return res.json({ authors: getAllAuthors });
 });
 
 /*
@@ -117,12 +139,16 @@ Access          PUBLIC
 Parameters      Authors
 Method          GET
 */
-app.get("/auth/:authors", (req, res) => {
-  const getSpecificAuthor = database.authors.filter((author) =>
-  author.id == req.params.authors
-  );
+app.get("/author/:authors", async (req, res) => {
+  /* const getSpecificAuthor = database.authors.filter(
+    (author) => author.id == req.params.authors
+  ); */
 
-  if (getSpecificAuthor.length === 0) {
+  const getSpecificAuthor = await AuthorModel.findOne({
+    id: parseInt(req.params.authors),
+  }).catch((err) => console.log(err));
+
+  if (!getSpecificAuthor) {
     return res.json({
       error: `No Author found as ${req.params.authors}`,
     });
@@ -132,18 +158,22 @@ app.get("/auth/:authors", (req, res) => {
 });
 
 /*
-Route           /author
+Route           /authors
 Description     get a list of authors based on a book's ISBN
 Access          PUBLIC
 Parameters      isbn
 Method          GET
 */
-app.get("/author/:isbn", (req, res) => {
-  const getSpecificAuthors = database.authors.filter((author) =>
+app.get("/authors/:isbn", async (req, res) => {
+  /*   const getSpecificAuthors = database.authors.filter((author) =>
     author.books.includes(req.params.isbn)
-  );
+  ); */
 
-  if (getSpecificAuthors.length === 0) {
+  const getSpecificAuthors = await AuthorModel.findOne({
+    books: req.params.isbn,
+  }).catch((err) => console.log(err));
+
+  if (!getSpecificAuthors) {
     return res.json({
       error: `No author found for the book ${req.params.isbn}`,
     });
@@ -159,8 +189,9 @@ app.get("/author/:isbn", (req, res) => {
   Parameters      NONE
   Method          GET
   */
-app.get("/publications", (req, res) => {
-  return res.json({ publications: database.publications });
+app.get("/publications", async (req, res) => {
+  const getAllPublications = await PublicationModel.find();
+  return res.json({ publications: getAllPublications });
 });
 
 /*
@@ -171,12 +202,16 @@ Parameters      Publication
 Method          GET
 */
 
-app.get("/publications/:publications", (req, res) => {
-  const getSpecificPublication = database.publications.filter((publication) =>
-  publication.id == req.params.publications
-  );
+app.get("/publications/:publications", async (req, res) => {
+  /*   const getSpecificPublication = database.publications.filter(
+    (publication) => publication.id == req.params.publications
+  ); */
 
-  if (getSpecificPublication.length === 0) {
+  const getSpecificPublication = await PublicationModel.findOne({
+    id: parseInt(req.params.publications),
+  }).catch((err) => console.log(err));
+
+  if (!getSpecificPublication) {
     return res.json({
       error: `No Publication found as ${req.params.publications}`,
     });
@@ -186,18 +221,22 @@ app.get("/publications/:publications", (req, res) => {
 });
 
 /*
-Route           /publications
+Route           /publication
 Description     get a list of publications based on a book's ISBN
 Access          PUBLIC
 Parameters      isbn
 Method          GET
 */
-app.get("/publications/:isbn", (req, res) => {
-  const getSpecificPublications = database.publications.filter((publication) =>
+app.get("/publication/:isbn", async (req, res) => {
+/*   const getSpecificPublications = database.publications.filter((publication) =>
     publication.books.includes(req.params.isbn)
-  );
+  ); */
 
-  if (getSpecificPublications.length === 0) {
+  const getSpecificPublications = await PublicationModel.findOne({
+    books: req.params.isbn
+  }).catch((err) => console.log(err));
+
+  if (!getSpecificPublications) {
     return res.json({
       error: `No Publication found for the book ${req.params.isbn}`,
     });
@@ -213,10 +252,15 @@ Access          PUBLIC
 Parameters      NONE
 Method          POST
 */
-app.post("/book/new", (req, res) => {
+app.post("/book/new", async (req, res) => {
   const { newBook } = req.body;
-  database.books.push(newBook);
-  return res.json({ books: database.books, message: "Book was added!" });
+  //database.books.push(newBook);
+
+  BookModel.create(newBook);
+
+  //const addNewBook = BookModel.create(newBook);
+
+  return res.json({ message: "Book was added!" });
 });
 
 /*
@@ -228,8 +272,10 @@ Method          POST
 */
 app.post("/author/new", (req, res) => {
   const { newAuthor } = req.body;
-  database.authors.push(newAuthor);
-  return res.json({ authors: database.authors, message: "author was added!" });
+  //database.authors.push(newAuthor);
+
+  AuthorModel.create(newAuthor);
+  return res.json({ message: "author was added!" });
 });
 
 /*
@@ -241,11 +287,9 @@ Method          POST
 */
 app.post("/publication/new", (req, res) => {
   const { newpublication } = req.body;
-  database.publications.push(newpublication);
-  return res.json({
-    publications: database.publications,
-    message: "Publication was added!",
-  });
+  //database.publications.push(newpublication);
+  PublicationModel.create(newpublication);
+  return res.json({ message: "Publication was added!" });
 });
 
 /*
