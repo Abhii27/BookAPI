@@ -29,12 +29,12 @@
 // New Book ✅📌
 
 // PUT
-// Update book details✅
-// update/add new author✅
+// Update book details✅📌
+// update/add new author✅📌
 
 // DELETE
-// delete a book✅
-// delete a author from a book✅
+// delete a book✅📌
+// delete a author from a book✅📌
 
 // ---------------------------------------------------------------------------------------
 
@@ -51,10 +51,10 @@
 // New Author ✅📌
 
 // PUT
-// update Author name using id [Task] ✅
+// update Author name using id [Task] ✅📌
 
 // DELETE
-// Delete an author [Task] ✅
+// Delete an author [Task] ✅📌
 
 // ---------------------------------------------------------------------------------------
 
@@ -71,9 +71,9 @@
 // Add new publication [task] ✅📌
 
 // PUT
-// update publication name using id [Task] ✅
-// update/add new book to a publication✅
+// update publication name using id [Task] ✅📌
+// update/add new book to a publication✅📌
 
 // DELETE
-// delete a book from publication ✅
-// delete a publication [Task] ✅
+// delete a book from publication ✅📌
+// delete a publication [Task] ✅📌
